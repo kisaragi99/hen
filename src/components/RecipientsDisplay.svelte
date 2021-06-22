@@ -7,6 +7,7 @@
 
 
   const recipientsResult:Array<string> = recipients; // replace recipients with logic that they want. 
+  console.log(recipients);
 </script>
 
 
