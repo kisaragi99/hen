@@ -7,7 +7,6 @@
 
   export let emails: Email[]
   
-
   const emailsByDate = groupBy<Email>(emails, ({ datetime }) =>
     new Date(datetime).toLocaleDateString()
   )
