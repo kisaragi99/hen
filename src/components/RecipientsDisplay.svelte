@@ -1,8 +1,20 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
   export let recipients:Array<string>
 
   const recipientsResult:Array<string> = recipients; // replace recipients with logic that they want. 
+  
+  let wrapperNew;
 
+  function isEllipsisActive(e) {
+     console.log(e.offsetWidth < e.scrollWidth);
+    };
+
+  onMount(() => {
+    isEllipsisActive(wrapperNew);
+  });
+
+  
 </script>
 
 <style>
@@ -21,25 +33,19 @@
 
   .recipientEmail{
   }
-</style>
-<!-- Если к нам пришел массив с длиной больше 1, то надо показать компонент (квадратик с цифрой)  -->
-<!-- Если же в ячейку могут поместиться все элементы, то надо показать всех -->
-<!-- -->
-<!-- -->
-<!-- -->
-<!-- -->
 
+</style>
 
 
 {#if recipientsResult.length > 1}  
-<div class="wrapper">
-  <spa class="recipientEmail">{recipientsResult[0]}</spa>
-  <span class={"box"}>{`+${recipientsResult.length - 1}`}</span>
+<div bind:this="{wrapperNew}" class="wrapper">
+  <span class="recipientEmail">{recipientsResult[0]}</span>
+  <span class="box">{`+${recipientsResult.length - 1}`}</span>
 </div>
 
 
 {:else}
-<span>{recipientsResult}</span>
+<span bind:this="{wrapperNew}">{recipientsResult}</span>
 {/if}
 
 
