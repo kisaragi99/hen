@@ -5,14 +5,13 @@
 
   const recipientsResult: Array<string> = recipients;
 
-  function getTextWidth(text, font) {
+  function getTextWidth(text) {
     const canvas = document.createElement("canvas");
     const context = canvas.getContext("2d");
-    context.font = font;
+    context.font = "normal 16px arial";
     const metrics = context.measureText(text);
     return metrics.width;
   };
-  const fontConfig = "normal 16px arial";
   
   // Надо написать функцию которая принимает массив, а возвращает строку всех элементов.
 
