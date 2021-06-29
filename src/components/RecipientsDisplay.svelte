@@ -1,52 +1,54 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-  export let recipients:Array<string>
+  import { onMount } from 'svelte'
 
-  const recipientsResult:Array<string> = recipients; // replace recipients with logic that they want. 
-  
-  let wrapperNew;
+  export let recipients: Array<string>
+
+  const recipientsResult: Array<string> = recipients.map((el)=>` ${el}`) // replace recipients with logic that they want.
+
+  // dom object for recipientEmail wrapper.
+  let wrapperNew
+  // variable that tells us if text inside wrapperNew was overspilled. (on mounting)
+  let isOverlapping
 
   function isEllipsisActive(e) {
-     console.log(e.offsetWidth < e.scrollWidth);
-    };
+    isOverlapping = e.offsetWidth < e.scrollWidth
+  }
 
   onMount(() => {
     isEllipsisActive(wrapperNew);
+    if (isOverlapping && recipientsResult.length > 1) {
+      wrapperNew.innerHTML = `${recipientsResult[0]}`;
+    };
   });
 
-  
+  console.log(recipientsResult.length)
+
 </script>
 
 <style>
-  .box{
+  /* .box {
     color: white;
     padding: 2px 5px;
     font-size: 16px;
     background-color: #666666;
     border-radius: 3px;
-    margin-left:5px ;
+    margin-left: 5px;
   }
-  .wrapper{
+  .wrapper {
     display: flex;
     justify-content: space-between;
-  }
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  } */
 
-  .recipientEmail{
+  div{
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
-
 </style>
 
-
-{#if recipientsResult.length > 1}  
-<div bind:this="{wrapperNew}" class="wrapper">
-  <span class="recipientEmail">{recipientsResult[0]}</span>
-  <span class="box">{`+${recipientsResult.length - 1}`}</span>
+<div bind:this="{wrapperNew}">
+  <span class="recipientEmail">{recipientsResult}</span>
 </div>
 
-
-{:else}
-<span bind:this="{wrapperNew}">{recipientsResult}</span>
-{/if}
-
-
-
+<!-- Надо передать в переменную количество успешно отрисованных, не обрезанных емеилов -->

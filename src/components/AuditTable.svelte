@@ -13,7 +13,6 @@
   // Convert into an array of arrays based on date sent
   const emailGroupsByDate = Object.entries(emailsByDate).map(val => val[1]);
 
-  console.warn(emailGroupsByDate[0]);
 </script>
 
 <style lang="scss">

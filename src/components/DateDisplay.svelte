@@ -14,6 +14,7 @@
   }
 
   const date = datetimeObject.toLocaleDateString('en-US', options)
+  
 </script>
 
 <!--
