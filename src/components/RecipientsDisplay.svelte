@@ -1,29 +1,49 @@
 <script lang="ts">
   import { onMount } from 'svelte'
 
-  export let recipients: Array<string>
+  export let recipients: Array<string>;
 
-  const recipientsResult: Array<string> = recipients.map((el)=>` ${el}`) // replace recipients with logic that they want.
+  const recipientsResult: Array<string> = recipients;
 
-  // dom object for recipientEmail wrapper.
-  let wrapperNew
-  // variable that tells us if text inside wrapperNew was overspilled. (on mounting)
-  let isOverlapping
+  function getTextWidth(text, font) {
+    const canvas = document.createElement("canvas");
+    const context = canvas.getContext("2d");
+    context.font = font;
+    const metrics = context.measureText(text);
+    return metrics.width;
+  };
+  const fontConfig = "normal 16px arial";
+  
+  // Надо написать функцию которая принимает массив, а возвращает строку всех элементов.
 
-  function isEllipsisActive(e) {
-    isOverlapping = e.offsetWidth < e.scrollWidth
-  }
+  function getString(arrayOfStrings){
+    let result;
+    result = arrayOfStrings.join(",");
+    return result;
+  };
+  
+  let stringFromArray = getString(recipientsResult);
+  // Надо переписать функцию, надо вытащить ширину каджого элемента в массиве, а потом сложить их.
 
-  onMount(() => {
-    isEllipsisActive(wrapperNew);
-    if (isOverlapping && recipientsResult.length > 1) {
-      wrapperNew.innerHTML = `${recipientsResult[0]}`;
-    };
+  let wrapper;
+  
+  onMount(()=>{
+    let cellWidth = wrapper.parentElement.offsetWidth;
+    console.log(cellWidth);
+    
+
   });
 
-  console.log(recipientsResult.length)
-
 </script>
+
+
+
+
+<span bind:this="{wrapper}" class="recipientEmail">{recipientsResult}</span>
+
+
+
+
 
 <style>
   /* .box {
@@ -39,16 +59,10 @@
     justify-content: space-between;
     white-space: nowrap;
     text-overflow: ellipsis;
-  } */
+  }
 
   div{
     white-space: nowrap;
     text-overflow: ellipsis;
-  }
+  } */
 </style>
-
-<div bind:this="{wrapperNew}">
-  <span class="recipientEmail">{recipientsResult}</span>
-</div>
-
-<!-- Надо передать в переменную количество успешно отрисованных, не обрезанных емеилов -->
