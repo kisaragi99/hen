@@ -28,8 +28,30 @@
   
   onMount(()=>{
     let cellWidth = wrapper.parentElement.offsetWidth;
-    console.log(cellWidth);
-    
+    let fullArrayWidth = getTextWidth(stringFromArray);
+
+    function getFinalRecipients(cellWidth, recipientsResult){ 
+      let widthOfElements = recipientsResult.map((el, i)=>{
+        if(i > 0){
+          return getTextWidth(el) + 4.4453125;
+        } else{
+          return getTextWidth(el);
+        }
+      });
+
+
+      for(let [i, el] of widthOfElements.entries()){
+        // Здесь надо проверять входят ли все элементы в ячейку?
+        // Зная ширину каждого элемента, мы можем добавлять их по очереди, пока их сумма не будет больше чем ширина ячейки
+        // Если мы добавили элемент, и разница суммы элементов больше чем ширина ячейки, 
+        // то мы не добавляем этот элемент в результирующий массив, и возвращаем массив со всеми предыдущими элементами
+
+      };
+
+
+    };
+
+    getFinalRecipients(cellWidth, recipientsResult);
 
   });
 
