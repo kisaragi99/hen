@@ -30,7 +30,7 @@
   // =================================================================||
 
   onMount(() => {
-    let cellWidth = wrapper.parentElement.offsetWidth - 36 // - 36 px (Ширина компонента с цифрой)
+    let cellWidth = wrapper.parentElement.offsetWidth - 61 // - 36 px (Ширина компонента с цифрой с отступами)
     let fullArrayWidth = getTextWidth(stringFromArray)
 
     function getFinalRecipients(cellWidth, recipientsResult) {
@@ -60,10 +60,10 @@
         widthSum += el.width
         if (cellWidth > widthSum) {
           resultArr.push(el.text)
-        }
+        } 
       })
 
-      wrapper.innerHTML = resultArr.map(el => ` ${el}`)
+      wrapper.innerHTML = resultArr.map(el => ` ${el}`) + ", ..."
       let restNumber = arrayOfObjects.length - resultArr.length
       numberComponent = restNumber
 
@@ -72,6 +72,8 @@
 
     getFinalRecipients(cellWidth, recipientsResult)
   })
+
+
 </script>
 
 <style>
@@ -97,7 +99,7 @@
 </style>
 
 {#if numberComponent === 0}
-  <span bind:this={wrapper} class="recipientEmail">{recipientsResult}</span>
+  <span bind:this={wrapper} class="recipientEmail">{recipientsResult.map(el => ` ${el}`)}</span>
 {:else}
   <div class="wrapper">
     <span bind:this={wrapper} class="recipientEmail">{recipientsResult}</span>
