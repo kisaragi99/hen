@@ -1,73 +1,81 @@
 <script lang="ts">
   import { onMount } from 'svelte'
 
-  export let recipients: Array<string>;
+  export let recipients: Array<string>
 
-  const recipientsResult: Array<string> = recipients;
+  const recipientsResult: Array<string> = recipients
 
   function getTextWidth(text) {
-    const canvas = document.createElement("canvas");
-    const context = canvas.getContext("2d");
-    context.font = "normal 16px arial";
-    const metrics = context.measureText(text);
-    return metrics.width;
-  };
-  
+    const canvas = document.createElement('canvas')
+    const context = canvas.getContext('2d')
+    context.font = 'normal 16px arial'
+    const metrics = context.measureText(text)
+    return metrics.width
+  }
+
   // Надо написать функцию которая принимает массив, а возвращает строку всех элементов.
 
-  function getString(arrayOfStrings){
-    let result;
-    result = arrayOfStrings.join(",");
-    return result;
-  };
-  
-  let stringFromArray = getString(recipientsResult);
+  function getString(arrayOfStrings) {
+    return arrayOfStrings.join(',')
+  }
+
+  let stringFromArray = getString(recipientsResult)
   // Надо переписать функцию, надо вытащить ширину каджого элемента в массиве, а потом сложить их.
 
-  let wrapper;
-  
-  onMount(()=>{
-    let cellWidth = wrapper.parentElement.offsetWidth;
-    let fullArrayWidth = getTextWidth(stringFromArray);
+  let wrapper
+  let numberComponent
 
-    function getFinalRecipients(cellWidth, recipientsResult){ 
-      let widthOfElements = recipientsResult.map((el, i)=>{
-        if(i > 0){
-          return getTextWidth(el) + 4.4453125;
-        } else{
-          return getTextWidth(el);
+  // =================================================================||
+  // =================================================================||
+  // =================================================================||
+
+  onMount(() => {
+    let cellWidth = wrapper.parentElement.offsetWidth - 36 // - 36 px (Ширина компонента с цифрой)
+    let fullArrayWidth = getTextWidth(stringFromArray)
+
+    function getFinalRecipients(cellWidth, recipientsResult) {
+      let widthOfElements = recipientsResult.map((el, i) => {
+        if (i > 0) {
+          return getTextWidth(el) + 4.4453125
+        } else {
+          return getTextWidth(el)
         }
-      });
+      })
 
+      function merge(textArr, widthArr) {
+        const result = []
+        for (let i = 0; i < textArr.length; i++) {
+          result.push({
+            text: textArr[i],
+            width: widthArr[i],
+          })
+        }
+        return result
+      }
 
-      for(let [i, el] of widthOfElements.entries()){
-        // Здесь надо проверять входят ли все элементы в ячейку?
-        // Зная ширину каждого элемента, мы можем добавлять их по очереди, пока их сумма не будет больше чем ширина ячейки
-        // Если мы добавили элемент, и разница суммы элементов больше чем ширина ячейки, 
-        // то мы не добавляем этот элемент в результирующий массив, и возвращаем массив со всеми предыдущими элементами
+      let arrayOfObjects = merge(recipientsResult, widthOfElements)
+      let resultArr = []
+      let widthSum = 0
+      arrayOfObjects.map(el => {
+        widthSum += el.width
+        if (cellWidth > widthSum) {
+          resultArr.push(el.text)
+        }
+      })
 
-      };
+      wrapper.innerHTML = resultArr.map(el => ` ${el}`)
+      let restNumber = arrayOfObjects.length - resultArr.length
+      numberComponent = restNumber
 
+      console.log(restNumber)
+    }
 
-    };
-
-    getFinalRecipients(cellWidth, recipientsResult);
-
-  });
-
+    getFinalRecipients(cellWidth, recipientsResult)
+  })
 </script>
 
-
-
-
-<span bind:this="{wrapper}" class="recipientEmail">{recipientsResult}</span>
-
-
-
-
-
 <style>
-  /* .box {
+  .box {
     color: white;
     padding: 2px 5px;
     font-size: 16px;
@@ -82,8 +90,17 @@
     text-overflow: ellipsis;
   }
 
-  div{
+  div {
     white-space: nowrap;
     text-overflow: ellipsis;
-  } */
+  }
 </style>
+
+{#if numberComponent === 0}
+  <span bind:this={wrapper} class="recipientEmail">{recipientsResult}</span>
+{:else}
+  <div class="wrapper">
+    <span bind:this={wrapper} class="recipientEmail">{recipientsResult}</span>
+    <span class="box">{`+${numberComponent}`}</span>
+  </div>
+{/if}
