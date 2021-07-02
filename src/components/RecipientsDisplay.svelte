@@ -13,14 +13,12 @@
     return metrics.width
   }
 
-  // Надо написать функцию которая принимает массив, а возвращает строку всех элементов.
-
   function getString(arrayOfStrings) {
     return arrayOfStrings.join(',')
   }
 
   let stringFromArray = getString(recipientsResult)
-  // Надо переписать функцию, надо вытащить ширину каджого элемента в массиве, а потом сложить их.
+  
 
   let wrapper
   let numberComponent
@@ -30,8 +28,7 @@
   // =================================================================||
 
   function getTruncatedValues() {
-    let cellWidth = wrapper.parentElement.offsetWidth - 61 // - 36 px (Ширина компонента с цифрой с отступами)
-    let fullArrayWidth = getTextWidth(stringFromArray)
+    let cellWidth = wrapper.parentElement.offsetWidth - 61 // 61 px (Ширина компонента с цифрой с отступами)
 
     function getFinalRecipients(cellWidth, recipientsResult) {
       let widthOfElements = recipientsResult.map((el, i) => {
@@ -66,7 +63,7 @@
       if (resultArr.length === 0) {
         resultArr.push(arrayOfObjects[0].text)
       }
-      
+
       wrapper.innerHTML = resultArr.map(el => ` ${el}`) + ', ...'
       let restNumber = arrayOfObjects.length - resultArr.length
       numberComponent = restNumber
@@ -82,6 +79,7 @@
   window.addEventListener('resize', () => {
     getTruncatedValues()
   })
+  // есть проблема, когда делаю ресайз - остается 「, ...」 в тех местах где изначально был только 1 элемент.
 </script>
 
 <style>
