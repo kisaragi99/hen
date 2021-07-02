@@ -29,7 +29,7 @@
   // =================================================================||
   // =================================================================||
 
-  onMount(() => {
+  function getTruncatedValues() {
     let cellWidth = wrapper.parentElement.offsetWidth - 61 // - 36 px (Ширина компонента с цифрой с отступами)
     let fullArrayWidth = getTextWidth(stringFromArray)
 
@@ -60,20 +60,28 @@
         widthSum += el.width
         if (cellWidth > widthSum) {
           resultArr.push(el.text)
-        } 
+        }
       })
 
-      wrapper.innerHTML = resultArr.map(el => ` ${el}`) + ", ..."
+      if (resultArr.length === 0) {
+        resultArr.push(arrayOfObjects[0].text)
+      }
+      
+      wrapper.innerHTML = resultArr.map(el => ` ${el}`) + ', ...'
       let restNumber = arrayOfObjects.length - resultArr.length
       numberComponent = restNumber
-
-      console.log(restNumber)
     }
 
     getFinalRecipients(cellWidth, recipientsResult)
+  }
+
+  onMount(() => {
+    getTruncatedValues()
   })
 
-
+  window.addEventListener('resize', () => {
+    getTruncatedValues()
+  })
 </script>
 
 <style>
@@ -96,10 +104,16 @@
     white-space: nowrap;
     text-overflow: ellipsis;
   }
+  .recipientEmail {
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
 </style>
 
 {#if numberComponent === 0}
-  <span bind:this={wrapper} class="recipientEmail">{recipientsResult.map(el => ` ${el}`)}</span>
+  <span bind:this={wrapper} class="recipientEmail">
+    {recipientsResult.map(el => ` ${el}`)}
+  </span>
 {:else}
   <div class="wrapper">
     <span bind:this={wrapper} class="recipientEmail">{recipientsResult}</span>
