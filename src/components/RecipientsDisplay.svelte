@@ -64,9 +64,12 @@
         resultArr.push(arrayOfObjects[0].text)
       }
 
-      wrapper.innerHTML = resultArr.map(el => ` ${el}`) + ', ...'
       let restNumber = arrayOfObjects.length - resultArr.length
       numberComponent = restNumber
+
+      wrapper.innerHTML = restNumber >= 1 ? resultArr.map(el => ` ${el}`) + ', ...' : resultArr.map(el => ` ${el}`)
+
+
     }
 
     getFinalRecipients(cellWidth, recipientsResult)
