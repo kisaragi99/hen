@@ -18,7 +18,6 @@
   }
 
   let stringFromArray = getString(recipientsResult)
-  
 
   let wrapper
   let numberComponent
@@ -28,7 +27,7 @@
   // =================================================================||
 
   function getTruncatedValues() {
-    let cellWidth = wrapper.parentElement.offsetWidth - 61 // 61 px (Ширина компонента с цифрой с отступами)
+    let cellWidth = wrapper.parentElement.offsetWidth - 63 // 61 px (Ширина компонента с цифрой с отступами)
 
     function getFinalRecipients(cellWidth, recipientsResult) {
       let widthOfElements = recipientsResult.map((el, i) => {
@@ -64,9 +63,12 @@
         resultArr.push(arrayOfObjects[0].text)
       }
 
-      wrapper.innerHTML = resultArr.map(el => ` ${el}`) + ', ...'
       let restNumber = arrayOfObjects.length - resultArr.length
       numberComponent = restNumber
+      wrapper.innerHTML =
+        restNumber >= 1
+          ? resultArr.map(el => ` ${el}`) + ', ...'
+          : resultArr.map(el => ` ${el}`)
     }
 
     getFinalRecipients(cellWidth, recipientsResult)
@@ -79,7 +81,6 @@
   window.addEventListener('resize', () => {
     getTruncatedValues()
   })
-  // есть проблема, когда делаю ресайз - остается 「, ...」 в тех местах где изначально был только 1 элемент.
 </script>
 
 <style>
@@ -89,7 +90,6 @@
     font-size: 16px;
     background-color: #666666;
     border-radius: 3px;
-    margin-left: 5px;
   }
   .wrapper {
     display: flex;
@@ -97,7 +97,6 @@
     white-space: nowrap;
     text-overflow: ellipsis;
   }
-
   div {
     white-space: nowrap;
     text-overflow: ellipsis;

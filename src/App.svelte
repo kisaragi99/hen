@@ -15,7 +15,7 @@
 
   h1 {
     color: $color-primary;
-    font-size: 3em;
+    font-size: 4em;
     font-weight: 100;
   }
 </style>
