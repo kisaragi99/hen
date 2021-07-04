@@ -3,9 +3,24 @@
 
   export let recipients: Array<string>
 
-  const recipientsResult: Array<string> = recipients
+  let wrapper: {
+    parentElement: { offsetWidth: number }
+    innerHTML: string | string[]
+  }
 
-  function getTextWidth(text) {
+  let numberComponent: number
+
+  // array that contains width of recipients array elements.
+  let widthOfElements: Array<number> = recipients.map((el, i) => {
+    if (i > 0) {
+      return getTextWidth(el) + 4.4453125
+    } else {
+      return getTextWidth(el)
+    }
+  })
+
+  // function that accepts string and returns its width
+  function getTextWidth(text: string): number {
     const canvas = document.createElement('canvas')
     const context = canvas.getContext('2d')
     context.font = 'normal 16px arial'
@@ -13,74 +28,50 @@
     return metrics.width
   }
 
-  function getString(arrayOfStrings) {
-    return arrayOfStrings.join(',')
+  // function that merges two arrays into one array of objects
+  function merge(textArr: Array<string>, widthArr: Array<number>) {
+    const result = []
+    for (let i = 0; i < textArr.length; i++) {
+      result.push({
+        text: textArr[i],
+        width: widthArr[i],
+      })
+    }
+    return result
   }
+  // this function checks if recipients fit into cell of a table by comparing width and then changes innerHTML of wrapper object
+  function getFinalRecipients(cellWidth: number, recipients: any[]): void {
+    let arrayOfObjects = merge(recipients, widthOfElements)
+    let resultArr: Array<object> = []
+    let widthSum: number = 0
 
-  let stringFromArray = getString(recipientsResult)
-
-  let wrapper
-  let numberComponent
-
-  // =================================================================||
-  // =================================================================||
-  // =================================================================||
-
-  function getTruncatedValues() {
-    let cellWidth = wrapper.parentElement.offsetWidth - 63 // 61 px (Ширина компонента с цифрой с отступами)
-
-    function getFinalRecipients(cellWidth, recipientsResult) {
-      let widthOfElements = recipientsResult.map((el, i) => {
-        if (i > 0) {
-          return getTextWidth(el) + 4.4453125
-        } else {
-          return getTextWidth(el)
-        }
-      })
-
-      function merge(textArr, widthArr) {
-        const result = []
-        for (let i = 0; i < textArr.length; i++) {
-          result.push({
-            text: textArr[i],
-            width: widthArr[i],
-          })
-        }
-        return result
+    for (let el of arrayOfObjects) {
+      widthSum += el.width
+      if (cellWidth >= widthSum) {
+        resultArr.push(el.text)
       }
-
-      let arrayOfObjects = merge(recipientsResult, widthOfElements)
-      let resultArr = []
-      let widthSum = 0
-      arrayOfObjects.map(el => {
-        widthSum += el.width
-        if (cellWidth > widthSum) {
-          resultArr.push(el.text)
-        }
-      })
-
-      if (resultArr.length === 0) {
-        resultArr.push(arrayOfObjects[0].text)
-      }
-
-      let restNumber = arrayOfObjects.length - resultArr.length
-      numberComponent = restNumber
-
-      wrapper.innerHTML =
-        restNumber >= 1
-          ? resultArr.map(el => ` ${el}`) + ', ...'
-          : resultArr.map(el => ` ${el}`)
-
     }
 
-    getFinalRecipients(cellWidth, recipientsResult)
+    if (resultArr.length === 0) {
+      resultArr.push(arrayOfObjects[0].text)
+    }
+
+    let restNumber = arrayOfObjects.length - resultArr.length
+
+    numberComponent = restNumber
+
+    wrapper.innerHTML =
+      restNumber >= 1
+        ? resultArr.map(el => ` ${el}`) + ', ...'
+        : resultArr.map(el => ` ${el}`)
+  }
+
+  function getTruncatedValues(): void {
+    let cellWidth = wrapper.parentElement.offsetWidth - 54
+    getFinalRecipients(cellWidth, recipients)
   }
 
   onMount(() => {
-    getTruncatedValues()
-  })
-
-  window.addEventListener('resize', () => {
     getTruncatedValues()
   })
 </script>
@@ -99,10 +90,6 @@
     white-space: nowrap;
     text-overflow: ellipsis;
   }
-  div {
-    white-space: nowrap;
-    text-overflow: ellipsis;
-  }
   .recipientEmail {
     text-overflow: ellipsis;
     overflow: hidden;
@@ -111,11 +98,11 @@
 
 {#if numberComponent === 0}
   <span bind:this={wrapper} class="recipientEmail">
-    {recipientsResult.map(el => ` ${el}`)}
+    {recipients.map(el => ` ${el}`)}
   </span>
 {:else}
   <div class="wrapper">
-    <span bind:this={wrapper} class="recipientEmail">{recipientsResult}</span>
+    <span bind:this={wrapper} class="recipientEmail">{recipients}</span>
     <span class="box">{`+${numberComponent}`}</span>
   </div>
 {/if}
