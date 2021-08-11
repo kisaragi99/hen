@@ -1,3 +1,5 @@
+# Тестовое задание зарубежной компании. 
+Описание задачи в файле  [challenge_details](https://github.com/kisaragi99/hen/blob/main/challenge_details/CHALLENGE.md) 
 # Email Audit
 
 Email Audit is a system used to audit all emails sent from within an organization.
